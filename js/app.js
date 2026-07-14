@@ -343,11 +343,27 @@ const railBtns=[...rail.children];
   const SHAPES=[sphere(),cube(),torus(),helix(),octa(),neural(),wave()];
 
   function resize(){
-    dpr=Math.min(devicePixelRatio||1,2);
+    dpr=Math.min(devicePixelRatio||1,isMobile?1.5:2);
     w=canvas.clientWidth;h=canvas.clientHeight;
     canvas.width=w*dpr;canvas.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
   }
   resize();addEventListener('resize',()=>{resize();});
+
+  /* pre-rendered glow sprites (quantized hue) — one drawImage per point
+     instead of two path fills; far cheaper on weak GPUs */
+  const SPRITES=new Map();
+  function sprite(q){
+    let s=SPRITES.get(q);
+    if(s)return s;
+    s=document.createElement('canvas');s.width=s.height=64;
+    const c=s.getContext('2d');
+    const g=c.createRadialGradient(32,32,0,32,32,32);
+    g.addColorStop(0,`hsla(${q},95%,88%,1)`);
+    g.addColorStop(0.22,`hsla(${q},95%,68%,0.5)`);
+    g.addColorStop(1,`hsla(${q},95%,60%,0)`);
+    c.fillStyle=g;c.fillRect(0,0,64,64);
+    SPRITES.set(q,s);return s;
+  }
 
   let pointer={x:0,y:0};
   addEventListener('pointermove',e=>{pointer.x=(e.clientX/innerWidth-0.5);pointer.y=(e.clientY/innerHeight-0.5);});
@@ -379,7 +395,9 @@ const railBtns=[...rail.children];
 
   function frame(){
     if(!visible){requestAnimationFrame(frame);return;}
-    if(canvas.clientWidth!==w||canvas.clientHeight!==h)resize();
+    // >1px tolerance: mobile UI-bar transitions jitter clientHeight, and each
+    // resize() wipes the canvas — resizing every frame reads as flicker
+    if(Math.abs(canvas.clientWidth-w)>1||Math.abs(canvas.clientHeight-h)>1)resize();
     const p=progress();
     const f=p*(NSTATES-1);
     let i0=Math.floor(f);if(i0>NSTATES-2)i0=NSTATES-2;const tt=ease(f-i0);
@@ -416,17 +434,13 @@ const railBtns=[...rail.children];
       const depth=(Z+1.3)/2.6; // 0..1
       const node=(i%97===0);
       const hh=hue + Z*16;
-      const light=42+depth*36;
-      const aOuter=(0.05+depth*0.10)*(node?2:1);
-      const aCore =(0.30+depth*0.55)*(node?1.4:1);
-      const rCore=(node?1.9:1.15)*persp*(isMobile?0.9:1);
-      // outer glow
-      ctx.fillStyle=`hsla(${hh},95%,${light}%,${aOuter})`;
-      ctx.beginPath();ctx.arc(sxp,syp,rCore*3.4,0,6.283);ctx.fill();
-      // core
-      ctx.fillStyle=`hsla(${hh},95%,${Math.min(88,light+22)}%,${aCore})`;
-      ctx.beginPath();ctx.arc(sxp,syp,rCore,0,6.283);ctx.fill();
+      const q=Math.round(hh/8)*8;
+      const alpha=(0.28+depth*0.60)*(node?1.35:1);
+      const R=(node?1.9:1.15)*persp*(isMobile?0.9:1)*3.2;
+      ctx.globalAlpha=Math.min(1,alpha);
+      ctx.drawImage(sprite(q),sxp-R,syp-R,R*2,R*2);
     }
+    ctx.globalAlpha=1;
     ctx.globalCompositeOperation='source-over';
     requestAnimationFrame(frame);
   }

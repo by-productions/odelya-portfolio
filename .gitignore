@@ -1,5 +1,6 @@
 .vercel
 node_modules
+LEARNING.md
 .DS_Store
 Thumbs.db
 .env
