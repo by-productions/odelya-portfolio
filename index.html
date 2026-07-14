@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>אודליה חסן · Creative Technologist</title>
+<meta name="description" content="אודליה חסן — Creative Technologist. בונה מערכות, פלטפורמות הרשמה, אוטומציות וחוויות דיגיטליות אינטראקטיביות. תיק עבודות חי: כל פרויקט ניתן לפתיחה ולחוויה." />
+<meta property="og:title" content="אודליה חסן · Creative Technologist" />
+<meta property="og:description" content="תיק עבודות חי — 22 פרויקטים אמיתיים: מערכות, אוטומציות וחוויות אינטראקטיביות." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>◆</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ============ SCROLL PROGRESS ============ -->
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav" id="nav">
+    <div class="wrap nav-in">
+      <a class="nav-logo" href="#top">אודליה<span class="s">◆</span>חסן</a>
+      <nav class="nav-links" aria-label="ניווט ראשי">
+        <a href="#projects">עבודות</a>
+        <a href="#about">עליי</a>
+        <a href="#experience">ניסיון</a>
+        <a href="#skills">כלים</a>
+        <a href="#contact" class="nav-cta">דברו איתי</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ STICKY 3D STAGE ============ -->
+  <div class="stage" id="stage">
+    <div class="sticky">
+      <canvas id="obj"></canvas>
+      <div class="stage-scrim"></div>
+      <div class="overlay">
+        <div class="ov-inner wrap">
+          <div class="ov-text">
+            <p class="ov-eyebrow" id="ovEye">Creative Technologist</p>
+            <h1 class="ov-title" id="ovTitle">אודליה חסן</h1>
+            <p class="ov-desc" id="ovDesc">בונה חוויות דיגיטליות אינטראקטיביות — מהרעיון ועד ההשקה. גללו כדי לראות מה אני עושה.</p>
+          </div>
+        </div>
+      </div>
+      <nav class="rail" id="rail" aria-label="ניווט יכולות"></nav>
+      <div class="scrollcue" id="cue"><span>גללו</span><span class="bar"></span></div>
+    </div>
+  </div>
+
+  <!-- ============ ABOUT + STATS ============ -->
+  <section class="band" id="about">
+    <div class="wrap">
+      <div class="about-grid">
+        <div class="sec-head reveal" style="margin-bottom:0;">
+          <p class="sec-tag">About · Odelya Hassan</p>
+          <h2 class="sec-title">מהגדרת הבעיה <span class="grad">ועד תפעול חי.</span></h2>
+          <p class="sec-body">
+            Creative Technologist עם ניסיון מעשי בבנייה עצמאית של מערכות פנימיות, פלטפורמות הרשמה לאירועים,
+            אוטומציות, דשבורדים וחוויות ווב אינטראקטיביות. משלבת חשיבה מוצרית, הבנה תפעולית, UX/UI, תוכן
+            ופיתוח בעזרת AI — ולוקחת פרויקטים מהגדרת הבעיה, דרך הפיתוח, ועד השקה ותפעול שוטף מול מאות ואלפי משתמשים.
+          </p>
+          <p class="sec-body" style="margin-top:14px;">
+            כיום ב-B.Y Productions & Creative — מפיקת תוכן ו-Digital Solutions Specialist. בוגרת תואר ראשון
+            בהצטיינות יתרה (ממוצע 95) מהאוניברסיטה הפתוחה.
+          </p>
+        </div>
+        <div class="stats reveal" id="stats">
+          <div class="stat"><span class="stat-num" data-count="22">0</span><span class="stat-label">פרויקטים חיים באוויר</span></div>
+          <div class="stat"><span class="stat-num" data-count="1010">0</span><span class="stat-label">עובדים בפלטפורמת FIREFLY</span></div>
+          <div class="stat"><span class="stat-num" data-count="89" data-suffix="%">0</span><span class="stat-label">השלימו הרשמה תוך ימים</span></div>
+          <div class="stat"><span class="stat-num" data-count="500">0</span><span class="stat-label">משתמשים בו-זמנית בחידון</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTS ============ -->
+  <section class="band" id="projects">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="sec-tag">The Work · 22 Projects</p>
+        <h2 class="sec-title">כל אחד מהם <span class="grad">חי, אמיתי, וניתן ללחיצה.</span></h2>
+        <p class="sec-body">אלה לא צילומי מסך. כל כרטיס פותח את האתר או המערכת עצמם, בגדול, כאן במסך.</p>
+      </div>
+      <div class="filters reveal" id="filters"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIENCE ============ -->
+  <section class="band" id="experience">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="sec-tag">Experience</p>
+        <h2 class="sec-title">הדרך <span class="grad">עד לכאן.</span></h2>
+      </div>
+      <div class="timeline" id="timeline"></div>
+    </div>
+  </section>
+
+  <!-- ============ SKILLS ============ -->
+  <section class="band" id="skills">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="sec-tag">Skills &amp; Tools</p>
+        <h2 class="sec-title">מה שאני <span class="grad">עובדת איתו.</span></h2>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-col reveal">
+          <h3>יכולות ליבה</h3>
+          <div class="pills" id="coreSkills"></div>
+        </div>
+        <div class="skill-col reveal">
+          <h3>כלים וטכנולוגיות</h3>
+          <div class="pills pills-ltr" id="toolSkills"></div>
+        </div>
+      </div>
+      <div class="edu reveal">
+        <div class="edu-item">
+          <span class="edu-icon">🎓</span>
+          <div>
+            <strong>B.A. במדעי החברה והרוח, האוניברסיטה הפתוחה</strong> · 2019–2024
+            <p>התמחות בחינוך ופיתוח תוכניות לימודים · ממוצע 95 · בוגרת בהצטיינות יתרה · הצטיינות דיקן שנתיים ברציפות</p>
+          </div>
+        </div>
+        <div class="edu-item">
+          <span class="edu-icon">🌐</span>
+          <div>
+            <strong>שפות</strong>
+            <p>עברית — שפת אם · אנגלית — שוטפת</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <p class="sec-tag reveal" style="text-align:center;">Let's build</p>
+      <h2 class="sec-title reveal">מחפשים מישהי ש<span class="grad">בונה</span>, לא רק מתארת.</h2>
+      <p class="contact-sub reveal">חוויות אינטראקטיביות, מערכות פנימיות, או מוצר שצריך לקום מהר וטוב — זה מה שאני עושה.</p>
+
+      <form class="cform reveal" id="cform" novalidate>
+        <div class="cform-row">
+          <label class="field">
+            <span>שם מלא *</span>
+            <input type="text" name="name" required autocomplete="name" placeholder="איך קוראים לך?" />
+          </label>
+          <label class="field">
+            <span>אימייל *</span>
+            <input type="email" name="email" required autocomplete="email" placeholder="you@company.com" dir="ltr" />
+          </label>
+        </div>
+        <div class="cform-row">
+          <label class="field">
+            <span>חברה / ארגון</span>
+            <input type="text" name="company" autocomplete="organization" placeholder="לא חובה" />
+          </label>
+          <label class="field">
+            <span>טלפון</span>
+            <input type="tel" name="phone" autocomplete="tel" placeholder="לא חובה" dir="ltr" />
+          </label>
+        </div>
+        <label class="field">
+          <span>מה בונים? *</span>
+          <textarea name="message" rows="5" required placeholder="ספרו לי על הפרויקט, האירוע או המערכת שאתם צריכים..."></textarea>
+        </label>
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <div class="cform-foot">
+          <button type="submit" class="btn btn-primary btn-lg" id="cformBtn">שליחה
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          </button>
+          <p class="cform-status" id="cformStatus" role="status"></p>
+        </div>
+      </form>
+
+      <div class="clinks reveal">
+        <a class="clink" href="mailto:odelya.hassan@gmail.com">odelya.hassan@gmail.com</a>
+        <a class="clink" href="tel:+972549095405">+972 54 909 5405</a>
+        <a class="clink" href="https://github.com/by-productions" target="_blank" rel="noopener">GitHub</a>
+        <a class="clink" href="cv/Odelya-Hassan-CV.docx" download>הורדת קו"ח ↓</a>
+      </div>
+    </div>
+    <footer>נבנה מאפס <span class="s">◆</span> כמו כל השאר · אודליה חסן · גני תקווה</footer>
+  </section>
+
+  <!-- ============ LIGHTBOX ============ -->
+  <div class="lb" id="lb" role="dialog" aria-modal="true">
+    <div class="lb-box">
+      <div class="lb-bar">
+        <h4 id="lbTitle"></h4>
+        <div class="rt">
+          <a class="btn btn-ghost" id="lbOpen" target="_blank" rel="noopener">פתיחה בכרטיסייה
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+          <button class="lb-x" id="lbX" aria-label="סגירה">✕</button>
+        </div>
+      </div>
+      <div class="lb-frame"><iframe id="lbFrame" title="תצוגה חיה"></iframe></div>
+    </div>
+  </div>
+
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
