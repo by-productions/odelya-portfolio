@@ -366,18 +366,25 @@ const railBtns=[...rail.children];
   }
 
   let pointer={x:0,y:0};
-  addEventListener('pointermove',e=>{pointer.x=(e.clientX/innerWidth-0.5);pointer.y=(e.clientY/innerHeight-0.5);});
+  let px=-1e4, py=-1e4; // cursor in screen px, for point repulsion
+  addEventListener('pointermove',e=>{
+    pointer.x=(e.clientX/innerWidth-0.5);pointer.y=(e.clientY/innerHeight-0.5);
+    px=e.clientX;py=e.clientY;
+  });
+  addEventListener('pointerout',e=>{if(!e.relatedTarget){px=-1e4;py=-1e4;}});
 
   const ease=t=>t*t*(3-2*t);
   const lerp=(a,b,t)=>a+(b-a)*t;
   let ay=0, curState=0, visible=true;
+  let pulse=0;              // burst on shape change
+  let sv=0, lastSY=scrollY; // smoothed scroll velocity
 
   const cue=document.getElementById('cue'),
         ovEye=document.getElementById('ovEye'),ovTitle=document.getElementById('ovTitle'),ovDesc=document.getElementById('ovDesc');
   const ovText=document.querySelector('.ov-text');
 
   function setState(i){
-    if(i===curState)return;curState=i;const s=STATES[i];
+    if(i===curState)return;curState=i;pulse=1;const s=STATES[i];
     ovEye.textContent=s.eye;ovTitle.textContent=s.title;ovDesc.textContent=s.desc;
     ovText.classList.remove('ov-anim');void ovText.offsetWidth;ovText.classList.add('ov-anim');
     railBtns.forEach((b,k)=>b.classList.toggle('on',k===i));
@@ -393,12 +400,11 @@ const railBtns=[...rail.children];
     return Math.max(0,Math.min(1,(scrollY-top)/scrollable));
   }
 
-  function frame(){
-    if(!visible){requestAnimationFrame(frame);return;}
-    // >1px tolerance: mobile UI-bar transitions jitter clientHeight, and each
-    // resize() wipes the canvas — resizing every frame reads as flicker
-    if(Math.abs(canvas.clientWidth-w)>1||Math.abs(canvas.clientHeight-h)>1)resize();
-    const p=progress();
+  // reusable projection buffers (avoid per-frame allocation)
+  const PX=new Float32Array(N),PY=new Float32Array(N),PZ=new Float32Array(N),PP=new Float32Array(N);
+  const REP=isMobile?90:130, REP2=REP*REP; // cursor repulsion radius
+
+  function render(p){
     const f=p*(NSTATES-1);
     let i0=Math.floor(f);if(i0>NSTATES-2)i0=NSTATES-2;const tt=ease(f-i0);
     setState(Math.round(f));
@@ -406,19 +412,28 @@ const railBtns=[...rail.children];
     const A=SHAPES[i0],B=SHAPES[i0+1];
     const hue=lerp(STATES[i0].hue,STATES[i0+1].hue,tt);
 
-    if(!reduce)ay+=0.0042;
+    // scroll velocity: fast scrolling spins and expands the cloud
+    const rawV=scrollY-lastSY;lastSY=scrollY;
+    sv+=(rawV-sv)*0.12;
+    const speed=Math.min(60,Math.abs(sv));
+
+    if(!reduce)ay+=0.0042+speed*0.00012;
+    pulse*=0.93;
+    const t=performance.now()*0.001;
+
     const rotY=ay+pointer.x*0.5;
     const rotX=-0.42+pointer.y*0.4;
     const cy=Math.cos(rotY),sy=Math.sin(rotY),cx=Math.cos(rotX),sx=Math.sin(rotX);
 
     const CX = isMobile? w*0.5 : w*0.40;
     const CY = isMobile? h*0.40 : h*0.5;
-    const scale=Math.min(w,h)* (isMobile?0.30:0.34);
+    const scale=Math.min(w,h)*(isMobile?0.30:0.34)*(1+pulse*0.06+speed*0.0012);
     const cam=3.4;
 
     ctx.clearRect(0,0,w,h);
     ctx.globalCompositeOperation='lighter';
 
+    // pass 1: project all points (+ cursor repulsion in screen space)
     for(let i=0;i<N;i++){
       const x=lerp(A[i][0],B[i][0],tt),
             y=lerp(A[i][1],B[i][1],tt),
@@ -429,20 +444,65 @@ const railBtns=[...rail.children];
       let Y=y*cx - Z*sx;
       Z=y*sx + Z*cx;
       const persp=cam/(cam-Z);
-      const sxp=CX + X*scale*persp;
-      const syp=CY - Y*scale*persp;
+      let sxp=CX + X*scale*persp;
+      let syp=CY - Y*scale*persp;
+      const dx=sxp-px,dy=syp-py,d2=dx*dx+dy*dy;
+      if(d2<REP2){
+        const d=Math.sqrt(d2)||1,push=(1-d/REP)*(isMobile?10:22);
+        sxp+=dx/d*push;syp+=dy/d*push;
+      }
+      PX[i]=sxp;PY[i]=syp;PZ[i]=Z;PP[i]=persp;
+    }
+
+    // pass 2: constellation lines between near neighbours (index-adjacent
+    // points are spatial neighbours in these shapes; distance filter drops
+    // the rest). Three alpha buckets = three strokes total.
+    const th=isMobile?26:36, th2=th*th;
+    const paths=[new Path2D(),new Path2D(),new Path2D()];
+    const maxLink=isMobile?1:2, step=isMobile?2:1;
+    for(let link=1;link<=maxLink;link++){
+      for(let i=0;i<N-link;i+=step){
+        const j=i+link;
+        const dx=PX[j]-PX[i],dy=PY[j]-PY[i],d2=dx*dx+dy*dy;
+        if(d2<th2){
+          const a=1-d2/th2;
+          const b=a>0.66?0:a>0.33?1:2;
+          paths[b].moveTo(PX[i],PY[i]);paths[b].lineTo(PX[j],PY[j]);
+        }
+      }
+    }
+    const lineHue=Math.round(hue/8)*8;
+    const lineAlpha=[0.30,0.17,0.08];
+    ctx.lineWidth=1;
+    for(let b=0;b<3;b++){
+      ctx.strokeStyle=`hsla(${lineHue},90%,72%,${Math.min(0.5,lineAlpha[b]*(1+pulse*1.5))})`;
+      ctx.stroke(paths[b]);
+    }
+
+    // pass 3: glow sprites (with per-point twinkle + state-change pulse)
+    for(let i=0;i<N;i++){
+      const Z=PZ[i],persp=PP[i];
       const depth=(Z+1.3)/2.6; // 0..1
       const node=(i%97===0);
-      const hh=hue + Z*16;
-      const q=Math.round(hh/8)*8;
-      const alpha=(0.28+depth*0.60)*(node?1.35:1);
+      const q=Math.round((hue+Z*16)/8)*8;
+      let alpha=(0.28+depth*0.60)*(node?1.35:1)*(1+pulse*0.5);
+      if(!reduce)alpha*=0.82+0.24*Math.sin(t*2+i*1.7);
       const R=(node?1.9:1.15)*persp*(isMobile?0.9:1)*3.2;
       ctx.globalAlpha=Math.min(1,alpha);
-      ctx.drawImage(sprite(q),sxp-R,syp-R,R*2,R*2);
+      ctx.drawImage(sprite(q),PX[i]-R,PY[i]-R,R*2,R*2);
     }
     ctx.globalAlpha=1;
     ctx.globalCompositeOperation='source-over';
+  }
+
+  function frame(){
+    if(!visible){requestAnimationFrame(frame);return;}
+    // >1px tolerance: mobile UI-bar transitions jitter clientHeight, and each
+    // resize() wipes the canvas — resizing every frame reads as flicker
+    if(Math.abs(canvas.clientWidth-w)>1||Math.abs(canvas.clientHeight-h)>1)resize();
+    render(progress());
     requestAnimationFrame(frame);
   }
+  window.__render=render; // manual single-frame hook for headless testing
   requestAnimationFrame(frame);
 })();
