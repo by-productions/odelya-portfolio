@@ -1,7 +1,7 @@
 /* =============== CAPABILITY STATES =============== */
 const STATES = [
   {eye:"Creative Technologist", title:"אודליה חסן",
-   desc:"בונה חוויות דיגיטליות אינטראקטיביות — מהרעיון ועד ההשקה. גללו כדי לראות מה אני עושה.", hue:200},
+   desc:"22 מערכות וחוויות דיגיטליות באוויר — הרשמות לאלף עובדים, חידונים ל-500 משתתפים בו-זמנית, ומה שביניהם. גללו.", hue:200},
   {eye:"01 / 06 — Frontend & Deploy", title:"Frontend & Deploy",
    desc:"HTML · CSS · JavaScript, ופריסה חיה לפרודקשן ב-Vercel ו-GitHub Pages. הכול עולה לאוויר בעצמי.", hue:188},
   {eye:"02 / 06 — Logic & Systems", title:"לוגיקה ומערכות",
@@ -114,8 +114,8 @@ const EXPERIENCE = [
    note:"תפעול, כספים, ספקים, Priority, גבייה ודיגיטציה של תהליכים אדמיניסטרטיביים."},
   {when:"2018 — 2022", org:"Landwer Coffee", role:"אחראית משמרת",
    note:"שיבוץ צוותים, תפעול חי, שירות לקוחות וניהול קופה."},
-  {when:"2012 — 2014", org:"סדנת התיאטרון של איקה זהר", role:"מנהלת הפקה ורכזת הסדנה",
-   note:"לוגיסטיקת הפקות לקאסטים של עד 80 משתתפים, עוזרת במאי, ניהול במה ולו\"ז."},
+  {when:"2012 — היום", org:"סדנת התיאטרון של איקה זהר", role:"מנהלת הפקה ורכזת הסדנה",
+   note:"לוגיסטיקת הפקות לקאסטים של עד 80 משתתפים, עוזרת במאי, ניהול במה ולו\"ז — במקביל לכל השאר, עד היום."},
 ];
 
 const CORE_SKILLS = [
@@ -155,7 +155,7 @@ PROJECTS.forEach((p,i)=>{
       <button class="btn btn-primary live">תצוגה חיה
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
       </button>
-      <a class="btn btn-ghost" href="${p.url}" target="_blank" rel="noopener">קישור</a>
+      <a class="btn btn-ghost" href="${p.url}" target="_blank" rel="noopener">לאתר המלא</a>
     </div>`;
   el.querySelector('.live').addEventListener('click',()=>openLB(p));
   grid.appendChild(el);
